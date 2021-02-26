@@ -1,0 +1,9 @@
+CMakeFiles
+.idea
+cmake-build-debug
+cmake-build-debug-cygwin
+1_proj.cbp
+1_proj.exe
+CMakeCache.txt
+Makefile
+cmake_install.cmake
