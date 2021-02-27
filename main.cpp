@@ -1,5 +1,7 @@
 #include <iostream>
 #include "utils.h"
+#include <map>
+#include "kasiski_test.h"
 
 #define get(x) #x
 
@@ -20,6 +22,7 @@ int main(int argc, char **argv) {
     (void) argv;
     string encrText;
     char chr;
+    map<int, int> distanceCnt;
 
     if (argc != 1) {
         cerr << "Program doesn't take any arguments!\n"
@@ -42,7 +45,30 @@ int main(int argc, char **argv) {
         encrText += tolower(chr);
     }
 
-    cout << encrText;
+    cout << encrText << endl;
+
+//    map<char, bool> sawChar;
+//    for (size_t i = 0; i < encrText.length(); i++) {
+//        if (sawChar.count(encrText[i]) > 0) {
+//            continue;
+//        } else {
+//            sawChar.insert(pair<char, bool>(encrText[i], true));
+//        }
+//        for (size_t j = i+1; j < encrText.length(); j++) {
+//            if (encrText[i] == encrText[j]) {
+//                size_t distance = j - i;
+//                distanceCnt[distance] += 1;
+//            }
+//        }
+//    }
+
+    for (auto & iter : distanceCnt) {
+        cout << iter.first << "\t" << iter.second << endl;
+    }
+    /************* KASISKI TEST *************/
+    vigCipher::Kasiski kasiskiTest(encrText);
+    kasiskiTest.doTest();
+    kasiskiTest.printTrigrams();
 
     return 0;
 }

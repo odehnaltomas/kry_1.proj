@@ -1,0 +1,3 @@
+https://www.cs.rochester.edu/~brown/Crypto/src/kasis.c // Kasiskiho test v C
+https://planetcalc.com/8550/ // Kasiskiho test online
+https://www.researchgate.net/publication/337338002_Analyzing_the_Kasiski_Method_Against_Vigenere_Cipher // Text ke Kasiskiho metodì
