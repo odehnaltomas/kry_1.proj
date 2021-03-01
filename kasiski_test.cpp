@@ -1,45 +1,118 @@
 #include "kasiski_test.h"
 #include "utils.h"
+#include <algorithm>
 
 using namespace std;
 
-void vigCipher::Kasiski::doTest() {
-    string trigram;
-    int comp;
-    for (size_t i = 0; i < encrText.length()-2; i++) {
-        trigram = encrText.substr(i, 3);
-        if (trigrams.count(trigram) > 0) {
+vector<pair<int, int>> vigCipher::Kasiski::doTest() {
+    int keyLen = 3; /** Hypothesized keyword length of cipher. **/
+
+    do_n_graph(3, trigrams);
+//    do_n_graph(4, fourgrams);
+//    do_n_graph(5, fivegrams);
+//    do_n_graph(6, sixgrams);
+
+    map<int, int> dividers;
+//    dividers.resize(biggestDistance);
+    for (auto & trig : trigrams) {
+        for (int distance : trig.second.second) {
+            for (int i = 2; i < distance; i++) {
+                if ((distance % i) == 0) {
+                    dividers[i]++;
+                }
+            }
+        }
+    }
+//    for (auto & trig : fourgrams) {
+//        for (int distance : trig.second.second) {
+//            for (int i = 1; i < distance; i++) {
+//                if ((distance % i) == 0) {
+//                    dividers[i]++;
+//                }
+//            }
+//        }
+//    }
+
+//    DEBUG("Divisor\tHits\n");
+//    for (int i = 2; i < biggestDistance; i++) {
+//        if (dividers[i] != 0) {
+//            DEBUG("%d\t\t\t%d\n", i, dividers[i]);
+//        }
+//        keyLen = (dividers[i] >= dividers[keyLen]) ? i : keyLen;
+//    }
+//    DEBUG("Kasisky keyword lenght: %d\n", keyLen);
+
+    vector<pair<int, int>> dividersVect;
+    sortMap(dividers, dividersVect);
+
+//    DEBUG("Divisor\tHits\n");
+//    for (int i = 0; i < biggestDistance; i++) {
+//        if (dividersVect[i].second != 0) {
+//            DEBUG("%d\t\t\t%d\n", dividersVect[i].first, dividersVect[i].second);
+//        }
+//    }
+    keyLen = (dividersVect.front().first);
+    DEBUG("Kasisky keyword lenght: %d\n", keyLen);
+
+    return dividersVect;
+}
+
+void vigCipher::Kasiski::do_n_graph(int n, map<string, pair<int, set<int>>> &nGraphArr) {
+    string nGraph; /** String with 3 characters. **/
+    int comp;       /** Variable for string comparing. **/
+
+    for (size_t i = 0; i < encrText.length()-(n-1); i++) {
+        nGraph = encrText.substr(i, n);
+        /** Check if trigram was already examined **/
+        if (nGraphArr.count(nGraph) > 0) {
             continue;
         }
 //        DEBUG("trigram: %s\n", trigram.c_str());
 
-        for (size_t j = i+1; j < encrText.length()-2; j++) {
-            comp = encrText.compare(j, 3, trigram);
+        for (size_t j = i+1; j < encrText.length()-(n-1); j++) {
+            comp = encrText.compare(j, n, nGraph);
 //            DEBUG("Is '%s' == '%s'?\n", trigram.c_str(), encrText.substr(j, 3).c_str());
 
+            /** Check if trigram was found somewhere else in the text. **/
             if (comp == 0) {
+                /** Yes it was **/
 //                DEBUG("YES\n");
 //                DEBUG("First occurence: %lu\n", i);
 //                DEBUG("Distance to next occurence: %lu\n", j-i);
 
-                auto iter = trigrams.find(trigram);
-                if (iter == trigrams.end()) {
+                auto iter = nGraphArr.find(nGraph);
+                int distance = j-i;
+                if (iter == nGraphArr.end()) {
+                    /** Check and set new biggest distance **/
+                    biggestDistance = (distance > biggestDistance) ? distance : biggestDistance;
+
                     set<int> set1;
-                    set1.insert(j-i);
+                    set1.insert(distance);
                     pair<int, set<int>> p(i, set1);
-                    trigrams.insert(pair<string, pair<int, set<int>>>(trigram, p));
+                    nGraphArr.insert(pair<string, pair<int, set<int>>>(nGraph, p));
                 } else {
-                    iter->second.second.insert(j-i);
+                    iter->second.second.insert(distance);
                 }
-            } else {
-//                DEBUG("NO\n");
             }
         }
-
-
     }
 }
 
+bool vigCipher::Kasiski::cmp(pair<int, int>& a, pair<int, int>& b) {
+    return a.second > b.second;
+}
+
+void vigCipher::Kasiski::sortMap(map<int, int>& m, vector<pair<int, int>>& vect) {
+    for (auto& it : m) {
+        vect.push_back(it);
+    }
+
+    sort(vect.begin(), vect.end(), cmp);
+}
+
+/**
+ *  Print found trigrams, their first occurrence and distances to other occurrences.
+ */
 void vigCipher::Kasiski::printTrigrams() {
     DEBUG("PRINT TRIGRAMS:\n");
     DEBUG("  Number of trigrams: %lu\n", trigrams.size());

@@ -1,7 +1,9 @@
 #include <iostream>
 #include "utils.h"
-#include <map>
 #include "kasiski_test.h"
+#include "friedman_test.h"
+#include "key_cracker.h"
+#include <map>
 
 #define get(x) #x
 
@@ -23,6 +25,8 @@ int main(int argc, char **argv) {
     string encrText;
     char chr;
     map<int, int> distanceCnt;
+    int keyLen = 0;
+    string key;
 
     if (argc != 1) {
         cerr << "Program doesn't take any arguments!\n"
@@ -45,7 +49,7 @@ int main(int argc, char **argv) {
         encrText += tolower(chr);
     }
 
-    cout << encrText << endl;
+//    cout << encrText << endl;
 
 //    map<char, bool> sawChar;
 //    for (size_t i = 0; i < encrText.length(); i++) {
@@ -61,14 +65,61 @@ int main(int argc, char **argv) {
 //            }
 //        }
 //    }
-
-    for (auto & iter : distanceCnt) {
-        cout << iter.first << "\t" << iter.second << endl;
-    }
+//
+//    for (auto & iter : distanceCnt) {
+//        cout << iter.first << "\t" << iter.second << endl;
+//    }
     /************* KASISKI TEST *************/
-    vigCipher::Kasiski kasiskiTest(encrText);
-    kasiskiTest.doTest();
-    kasiskiTest.printTrigrams();
+    DEBUG("============= KASISKI TEST =============\n");
+    vector<pair<int, int>> dividersVect;
 
+    vigCipher::Kasiski kasiskiTest(encrText);
+    dividersVect = kasiskiTest.doTest();
+//    kasiskiTest.printTrigrams();
+
+    DEBUG("Divisor\t\tHits\n");
+    for (auto i = 0; i < 10; i++) {
+        if (dividersVect[i].second != 0) {
+            DEBUG("%d\t\t\t%d\n", dividersVect[i].first, dividersVect[i].second);
+        }
+    }
+
+    /************* FRIEDMAN TEST *************/
+    DEBUG("============= FRIEDMAN TEST =============\n");
+    float friedmanKeyLen;
+    vigCipher::Friedman friedmanTest(encrText);
+    friedmanKeyLen = friedmanTest.doTest();
+
+    DEBUG("\n");
+
+    vector<pair<int, float>> friedmanKeyCandidates2;
+    friedmanKeyCandidates2 = friedmanTest.doColumWiseCI();
+
+    DEBUG("Key len\t\tCoincidence Index\n");
+    for (auto i = 0; i < 10; i++) {
+        if (friedmanKeyCandidates2[i].second != 0) {
+            DEBUG("%d\t\t\t%f\n", friedmanKeyCandidates2[i].first, friedmanKeyCandidates2[i].second);
+        }
+    }
+
+
+    for (auto i = 0; i < 10; i++) {
+        for (auto j = 0; j < 10; j++) {
+//            DEBUG("kas: %d, fried: %d, %f\n", dividersVect[i].first, friedmanKeyCandidates[j].first, friedmanKeyCandidates[j].second);
+            if (dividersVect[i].first == friedmanKeyCandidates2[j].first &&
+                friedmanKeyCandidates2[j].second > 0.059) {
+                if (keyLen == 0 || keyLen > friedmanKeyCandidates2[j].first) {
+                    keyLen = dividersVect[i].first;
+                }
+            }
+        }
+    }
+
+    DEBUG("KEY LENGTH: %d\n", keyLen);
+
+    vigCipher::KeyCracker keyCracker(encrText);
+    key = keyCracker.crack(keyLen);
+
+    cout << friedmanKeyLen << ";" << dividersVect[0].first << ";" << keyLen << ";" << key << endl;
     return 0;
 }
