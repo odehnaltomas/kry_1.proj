@@ -5,7 +5,7 @@
 using namespace std;
 
 void vigCipher::Kasiski::doTest() {
-    int keyLen = 3; /** Hypothesized keyword length of cipher. **/
+//    int keyLen; /** Hypothesized keyword length of cipher. **/
 
     do_n_graph(3, trigrams);
 //    do_n_graph(4, fourgrams);
@@ -32,8 +32,8 @@ void vigCipher::Kasiski::doTest() {
 //            DEBUG("%d\t\t\t%d\n", dividersVect[i].first, dividersVect[i].second);
 //        }
 //    }
-    keyLen = (dividersVect.front().first);
-    DEBUG("Kasisky keyword lenght: %d\n", keyLen);
+//    keyLen = (dividersVect.front().first);
+//    DEBUG("Kasisky keyword lenght: %d\n", keyLen);
 
     return;
 }
@@ -95,14 +95,14 @@ void vigCipher::Kasiski::sortMap(map<int, int>& m, vector<pair<int, int>>& vect)
  *  Print found trigrams, their first occurrence and distances to other occurrences.
  */
 void vigCipher::Kasiski::printTrigrams() {
-    DEBUG("PRINT TRIGRAMS:\n");
-    DEBUG("  Number of trigrams: %lu\n", trigrams.size());
-    DEBUG("\tTri:\t1. occur\tNext occur:\n");
-    for (auto iter = trigrams.begin(); iter != trigrams.end(); iter++) {
-        DEBUG("\t%s\t\t%d\t\t\t", iter->first.c_str(), iter->second.first);
-        for (int iterSet : iter->second.second) {
-            DEBUG("%d, ", iterSet);
-        }
-        DEBUG("\n");
-    }
+//    DEBUG("PRINT TRIGRAMS:\n");
+//    DEBUG("  Number of trigrams: %lu\n", trigrams.size());
+//    DEBUG("\tTri:\t1. occur\tNext occur:\n");
+//    for (auto iter = trigrams.begin(); iter != trigrams.end(); iter++) {
+//        DEBUG("\t%s\t\t%d\t\t\t", iter->first.c_str(), iter->second.first);
+//        for (int iterSet : iter->second.second) {
+//            DEBUG("%d, ", iterSet);
+//        }
+//        DEBUG("\n");
+//    }
 }

@@ -1,8 +1,10 @@
-#pragma once
+#ifndef KEY_CRACKER_H
+#define KEY_CRACKER_H
 
 #include "utils.h"
 #include <map>
 #include <string>
+#endif
 
 using namespace std;
 

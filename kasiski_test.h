@@ -1,10 +1,13 @@
-#pragma once
+#ifndef KASISKI_H
+#define KASISKI_H
+
 #include <iostream>
 #include <map>
 #include <string>
 #include <set>
 #include <vector>
 #include <memory>
+#endif
 
 using namespace std;
 

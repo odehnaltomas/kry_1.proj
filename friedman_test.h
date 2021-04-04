@@ -1,8 +1,11 @@
-#pragma once
+#ifndef FRIEDMAN_H
+#define FRIEDMAN_H
+
 #include <string>
 #include <map>
 #include <vector>
 #include <mutex>
+#endif
 
 using namespace std;
 

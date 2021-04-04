@@ -28,15 +28,15 @@ void vigCipher::KeyCracker::crack(int keyLen) {
         }
     }
 
-    DEBUG("\n");
-    for (auto i = 0; i < keyLen; i++) {
-        columnInfo& columnInfo1 = columnsCI[i];
-        DEBUG("%d:  ", i);
-        for (auto j = 0; j < 26; j++) {
-            DEBUG("%f,", columnInfo1.similarityArr[j]);
-        }
-        DEBUG("\n");
-    }
+//    DEBUG("\n");
+//    for (auto i = 0; i < keyLen; i++) {
+//        columnInfo& columnInfo1 = columnsCI[i];
+//        DEBUG("%d:  ", i);
+//        for (auto j = 0; j < 26; j++) {
+//            DEBUG("%f,", columnInfo1.similarityArr[j]);
+//        }
+//        DEBUG("\n");
+//    }
 
     pair<char, float> biggest;
     for (auto i = 0; i < keyLen; i++) {
@@ -49,5 +49,5 @@ void vigCipher::KeyCracker::crack(int keyLen) {
         key.push_back(biggest.first);
         biggest.second = 0;
     }
-    DEBUG("KEY:%s\n", key.c_str());
+//    DEBUG("KEY:%s\n", key.c_str());
 }

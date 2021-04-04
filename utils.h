@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UTILS_H
+#define UTILS_H
 
 #ifdef DEBUG_ENABLE
 #define DEBUG(...) fprintf(stderr, __VA_ARGS__)
@@ -6,4 +7,6 @@
 #else
 #define DEBUG(...) do {} while (0)
 #define DEBUG_EXPR(x) do {} while (0)
+#endif
+
 #endif

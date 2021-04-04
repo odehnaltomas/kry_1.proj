@@ -1,0 +1,13 @@
+SRC		= main2.cpp friedman_test.cpp friedman_test.h kasiski_test.cpp kasiski_test.h key_cracker.cpp key_cracker.h utils.h
+CXX		= g++
+CFLAGS	= -Wall -Wextra -pedantic -Werror -std=c++17
+LDFLAGS	= -pthread
+
+all: kry
+
+kry: $(SRC)
+	$(CXX) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+clean:
+	rm -f kry
+	rm -f *.o
