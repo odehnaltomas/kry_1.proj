@@ -4,6 +4,7 @@
 #include "friedman_test.h"
 #include "key_cracker.h"
 #include <map>
+#include <thread>
 
 using namespace std;
 
@@ -43,21 +44,31 @@ int main(int argc, char **argv) {
         encrText += tolower(chr);
     }
 
-    /************* KASISKI TEST *************/
     vigCipher::Kasiski kasiskiTest(encrText);
-    kasiskiTest.doTest();
-    dividersVect =dividersVect = kasiskiTest.getResult();
+    vigCipher::Friedman friedmanTest(encrText);
+
+    /************* KASISKI TEST *************/
+//    dividersVect = kasiskiTest.doTest();
 //    kasiskiTest.printTrigrams();
+    thread kasiskyThread(&vigCipher::Kasiski::doTest, &kasiskiTest);
 
     /************* FRIEDMAN TEST *************/
-    vigCipher::Friedman friedmanTest(encrText);
-    friedmanTest.doTest();
-    friedmanKeyLen = friedmanTest.getFriedmanKey();
+//    friedmanKeyLen = friedmanTest.doTest();
+
+    thread friedmanThread(&vigCipher::Friedman::doTest, &friedmanTest);
 
     DEBUG("\n");
 
     /************* COLUMN CI *************/
-    friedmanTest.doColumWiseCI();
+//    friedmanKeyCandidates2 = friedmanTest.doColumWiseCI();
+    thread columnCiThread(&vigCipher::Friedman::doColumWiseCI, &friedmanTest);
+
+    kasiskyThread.join();
+    friedmanThread.join();
+    columnCiThread.join();
+
+    dividersVect = kasiskiTest.getResult();
+    friedmanKeyLen = friedmanTest.getFriedmanKey();
     friedmanKeyCandidates2 = friedmanTest.getColumnCI();
 
 

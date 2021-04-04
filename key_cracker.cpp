@@ -1,9 +1,8 @@
 #include "key_cracker.h"
 #include <vector>
 
-string vigCipher::KeyCracker::crack(int keyLen) {
+void vigCipher::KeyCracker::crack(int keyLen) {
     vector<columnInfo> columnsCI(keyLen);
-    string key;
 
 //    for (auto i = 0; i < keyLen; i++) {
 //        for (char c : "abcdefghijklmnopqrstuvwxyz") {
@@ -11,7 +10,7 @@ string vigCipher::KeyCracker::crack(int keyLen) {
 //        }
 //    }
 
-    for (auto j = 0; j < keyLen; j++) {
+    for (int j = 0; j < keyLen; j++) {
         columnInfo& columnInfo1 = columnsCI[j];
         for (size_t k = j; k < encrText.length(); k+=keyLen) {
             columnInfo1.letterMap[encrText[k]].first++;
@@ -51,6 +50,4 @@ string vigCipher::KeyCracker::crack(int keyLen) {
         biggest.second = 0;
     }
     DEBUG("KEY:%s\n", key.c_str());
-
-    return key;
 }

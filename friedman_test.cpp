@@ -1,8 +1,9 @@
 #include "friedman_test.h"
 #include "utils.h"
 #include <algorithm>
+#include <cmath>
 
-float vigCipher::Friedman::doTest() {
+void vigCipher::Friedman::doTest() {
     map<char, int> letterFreq;
     map<char, int> letterFreq2;
     map<int, float> keyCandidates;
@@ -41,23 +42,29 @@ float vigCipher::Friedman::doTest() {
 //    key = ((kappP - kappR) * sum) / ((sum - 1) * kapp0 - (sum * kappR) + kappP);
     DEBUG("Estimated key length: %f\n", key);
 
-    return key;
+    friedmanKeyLen = key;
+    m_key.unlock();
 }
 
 
-vector<pair<int, float>> vigCipher::Friedman::doColumWiseCI() {
+void vigCipher::Friedman::doColumWiseCI() {
     map<int, vector<columnInfo>> columnsCI;
 //    map<int, float> keyCandidates;
     map<int, float> avgCis;
+    m_key.lock();
+    int maxKeyLen = (int) ceil(friedmanKeyLen) * 2;
+//    int maxKeyLen = 200;
+    m_key.unlock();
 
-    for (auto i = 1; i < 41; i++) {
+
+    for (auto i = 1; i < maxKeyLen; i++) {
         columnsCI[i].resize(i);
         for (char c : "abcdefghijklmnopqrstuvwxyz") {
             columnsCI[i][i-1].letterMap[c] = 0;
         }
     }
 
-    for (auto i = 1; i < 41; i++) {
+    for (auto i = 1; i < maxKeyLen; i++) {
         for (auto j = 0; j < i; j++) {
             columnInfo& columnInfo1 = columnsCI[i][j];
             for (size_t k = j; k < encrText.length(); k+=i) {
@@ -74,7 +81,7 @@ vector<pair<int, float>> vigCipher::Friedman::doColumWiseCI() {
     }
 
     float sumCi = 0;
-    for (auto i = 1; i < 41; i++) {
+    for (auto i = 1; i < maxKeyLen; i++) {
         for (auto j = 0; j < i; j++) {
             sumCi += columnsCI[i][j].kappa0;
         }
@@ -91,10 +98,7 @@ vector<pair<int, float>> vigCipher::Friedman::doColumWiseCI() {
 //        DEBUG("\n");
 //    }
 
-    vector<pair<int, float>> keyLenCandidates;
     sortMap(avgCis, keyLenCandidates);
-
-    return keyLenCandidates;
 }
 
 

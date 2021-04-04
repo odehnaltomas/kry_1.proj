@@ -4,7 +4,7 @@
 
 using namespace std;
 
-vector<pair<int, int>> vigCipher::Kasiski::doTest() {
+void vigCipher::Kasiski::doTest() {
     int keyLen = 3; /** Hypothesized keyword length of cipher. **/
 
     do_n_graph(3, trigrams);
@@ -23,26 +23,7 @@ vector<pair<int, int>> vigCipher::Kasiski::doTest() {
             }
         }
     }
-//    for (auto & trig : fourgrams) {
-//        for (int distance : trig.second.second) {
-//            for (int i = 1; i < distance; i++) {
-//                if ((distance % i) == 0) {
-//                    dividers[i]++;
-//                }
-//            }
-//        }
-//    }
 
-//    DEBUG("Divisor\tHits\n");
-//    for (int i = 2; i < biggestDistance; i++) {
-//        if (dividers[i] != 0) {
-//            DEBUG("%d\t\t\t%d\n", i, dividers[i]);
-//        }
-//        keyLen = (dividers[i] >= dividers[keyLen]) ? i : keyLen;
-//    }
-//    DEBUG("Kasisky keyword lenght: %d\n", keyLen);
-
-    vector<pair<int, int>> dividersVect;
     sortMap(dividers, dividersVect);
 
 //    DEBUG("Divisor\tHits\n");
@@ -54,7 +35,7 @@ vector<pair<int, int>> vigCipher::Kasiski::doTest() {
     keyLen = (dividersVect.front().first);
     DEBUG("Kasisky keyword lenght: %d\n", keyLen);
 
-    return dividersVect;
+    return;
 }
 
 void vigCipher::Kasiski::do_n_graph(int n, map<string, pair<int, set<int>>> &nGraphArr) {
